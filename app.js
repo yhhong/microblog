@@ -9,7 +9,7 @@ var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 
-var app = express();
+var app = express(); 
 
 // all environments
 app.set('port', process.env.PORT || 3000);

@@ -9,7 +9,9 @@
 <p>Welcome to <%= title %></p>
 </body>
 </html> -->
-<div class="hero-unit">
+
+
+<!-- <div class="hero-unit">
     <h1>
         欢迎来到 Microblog
     </h1>
@@ -53,4 +55,35 @@
             使其成为一款个性十足的开源输入法。
         </p>
     </div>
-</div>
+</div> -->
+
+
+<% if (!user) { %>
+    <div class="hero-unit">
+        <h1>
+            欢迎来到 Microblog
+        </h1>
+        <p>
+            Microblog 是一个基于 Node.js 的微博系统。
+        </p>
+        <p>
+            <a class="btn btn-primary btn-large" href="/login">
+                登录
+            </a>
+            <a class="btn btn-large" href="/reg">
+                立即注册
+            </a>
+        </p>
+    </div>
+    <% } else { %>
+        <%- partial('say') %>
+            <% } %>
+                <%- partial('posts') %>
+
+
+
+
+
+
+
+

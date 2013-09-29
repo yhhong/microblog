@@ -31,7 +31,6 @@ app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));//配置了静态文件服务器，因此/stylesheets/style.css 会定向到 app.js 所在目录的子目录中的文件 public/stylesheets/style.css
 
 // development only
@@ -107,12 +106,24 @@ if ('development' == app.get('env')) {
 //     },
 // });
 
+// 必须放置在app.use(app.router)前
 app.use(function(req, res, next){
     res.locals.user = req.session.user;
-    res.locals.error = req.flash('error');
-    res.locals.success = req.flash('success');
+    var err = req.flash('error');
+    if (err.length){
+        res.locals.error = err;
+    }else{
+        res.locals.error = null;
+    }    
+    var success = req.flash('success');
+    if (success.length){
+        res.locals.success = success;
+    }else{
+        res.locals.success = null;
+    }
     next();
 });
+app.use(app.router);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

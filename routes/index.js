@@ -32,15 +32,18 @@ var Post = require('../models/post.js');
 
 module.exports = function(app) {
 	// app.get('/',function(req, res) {res.render('index', {title: '首页'});});
-	
+
 	app.get('/',function(req, res) {
 	    Post.get(null,function(err, posts) {
 	        if (err) {
 	            posts = [];
 	        }
+	        //不解的地方，需要再套一层
+	        var postss = [];
+	        postss.push(posts);
 	        res.render('index', {
 	            title: '首页',
-	            posts: posts,
+	            posts: postss
 	        });
 	    });
 	});
@@ -49,12 +52,12 @@ module.exports = function(app) {
 	app.post('/reg', checkNotLogin);
 	app.post('/reg',function(req, res) {
 	    //检验用户两次输入的口令是否一致
-	    if (req.body['password-repeat'] != req.body['password']) {
-	        req.flash('error', '两次输入的口令不一致');
-	        return res.redirect('/reg');
+	    if (req.body['password-repeat'] != req.body['password']) {//req.body 就是 POST 请求信息解析过后的对象，例如我们要访问用户传递的password 域的值，只需访问 req.body['password'] 即可
+	        req.flash('error', '两次输入的口令不一致');//req.flash 是 Express 提供的一个奇妙的工具，通过它保存的变量只会在用户当前和下一次的请求中被访问，之后会被清除，通过它我们可以很方便地实现页面的通知和错误信息显示功能。
+	        return res.redirect('/reg');//res.redirect 是重定向功能，通过它会向用户返回一个 303 See Other 状态，通知浏览器转向相应页面。
 	    }
 	    //生成口令的散列值
-	    var md5 = crypto.createHash('md5');
+	    var md5 = crypto.createHash('md5');//crypto 是 Node.js 的一个核心模块，功能是加密并生成各种散列
 	    var password = md5.update(req.body.password).digest('base64');
 	    var newUser = new User({
 	        name: req.body.username,
@@ -135,9 +138,12 @@ module.exports = function(app) {
 	                req.flash('error', err);
 	                return res.redirect('/');
 	            }
+	            //不解的地方，需要再套一层
+		        var postss = [];
+		        postss.push(posts)
 	            res.render('user', {
 	                title: user.name,
-	                posts: posts,
+	                posts: postss
 	            });
 	        });
 	    });

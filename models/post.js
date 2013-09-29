@@ -62,7 +62,7 @@ Post.get = function get(username, callback) {
             }).toArray(function(err, docs) {
                 mongodb.close();
                 if (err) {
-                    callback(err, null);
+                    return callback(err, null);
                 }
                 // 封装 posts 为 Post 对象
                 var posts = [];
@@ -70,7 +70,8 @@ Post.get = function get(username, callback) {
                     var post = new Post(doc.user, doc.post, doc.time);
                     posts.push(post);
                 });
-                callback(null, posts);
+                // callback(null, posts);
+                callback(null,posts);
             });
         });
     });
